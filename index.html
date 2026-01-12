@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANOP:MCASSETSTOOLS | Premium Minecraft Artist Suite</title>
+    
+    <!-- Meta SEO & Branding -->
+    <meta name="description" content="Tools profesional untuk Texture & Skin Artists Minecraft. Minimalis, Cepat, Premium.">
+    <meta name="theme-color" content="#DC2626">
+
+    <!-- Fonts: Inter untuk tampilan clean & modern -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons: Phosphor Icons (Ringan & Estetik) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config untuk Custom Brand Colors -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        sanop: {
+                            red: '#E50914', // Aksen Merah Premium "Netflix-like"
+                            dark: '#0f0f0f', // Base Dark
+                            surface: '#18181b', // Surface Dark
+                            light: '#ffffff', // Base Light
+                            gray: '#a1a1aa'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS untuk detail yang tidak tercover Tailwind -->
+    <style>
+        /* Hide Scrollbar tapi tetap bisa scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Pixel Grid untuk Item Designer */
+        .pixel-grid {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            grid-template-rows: repeat(16, 1fr);
+            gap: 1px;
+            background-color: #333;
+            border: 1px solid #444;
+        }
+        .pixel-cell {
+            background-color: transparent;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+        .pixel-cell:hover {
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-900 dark:bg-sanop-dark dark:text-gray-100 transition-colors duration-300 overflow-x-hidden font-sans">
+
+    <!-- ================= HEADER ================= -->
+    <header class="fixed w-full top-0 z-50 glass transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl font-black tracking-tighter">SANOP<span class="text-sanop-red">:</span>MCTOOLS</span>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a href="#features" class="text-sm font-medium hover:text-sanop-red transition-colors">Features</a>
+                    <a href="#about" class="text-sm font-medium hover:text-sanop-red transition-colors">About</a>
+                    <!-- Dark Mode Toggle -->
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-all text-sanop-red">
+                        <i class="ph ph-moon text-xl" id="theme-icon"></i>
+                    </button>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center gap-4">
+                    <button id="theme-toggle-mobile" class="text-sanop-red">
+                         <i class="ph ph-moon text-xl" id="theme-icon-mobile"></i>
+                    </button>
+                    <button id="mobile-menu-btn" class="text-2xl focus:outline-none">
+                        <i class="ph ph-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-white dark:bg-sanop-surface border-b border-gray-200 dark:border-gray-800 animate-slide-up">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#features" class="block px-3 py-2 text-base font-medium hover:bg-gray-100 dark:hover:bg-white/5 rounded-md">Features</a>
+                <a href="#about" class="block px-3 py-2 text-base font-medium hover:bg-gray-100 dark:hover:bg-white/5 rounded-md">About</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= HERO SECTION ================= -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-0 opacity-30 pointer-events-none">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-sanop-red rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow" style="animation-delay: 1s;"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-slide-up">
+            <span class="inline-block py-1 px-3 rounded-full bg-sanop-red/10 text-sanop-red text-xs font-bold tracking-widest uppercase mb-6 border border-sanop-red/20">
+                Premium Minecraft Artist Suite
+            </span>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-tight">
+                Craft Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-sanop-red to-orange-600">Masterpiece.</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-400 font-light">
+                Kumpulan alat esensial untuk Texture Artist & Skin Creator. <br>
+                Desain aset Minecraft Anda dengan presisi, gaya, dan efisiensi.
+            </p>
+            <div class="mt-10 flex justify-center gap-4">
+                <a href="#features" class="px-8 py-4 bg-sanop-red text-white font-bold rounded-lg shadow-lg hover:bg-red-700 hover:shadow-red-500/30 transition-all transform hover:-translate-y-1">
+                    Mulai Berkarya
+                </a>
+                <a href="#" class="px-8 py-4 glass text-gray-900 dark:text-white font-bold rounded-lg hover:bg-white/10 transition-all">
+                    Dokumentasi
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FEATURES SECTION (GRID) ================= -->
+    <section id="features" class="py-20 bg-gray-100 dark:bg-black/50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold tracking-tight mb-2">Creative Arsenal</h2>
+                <div class="w-20 h-1 bg-sanop-red mx-auto"></div>
+            </div>
+
+            <!-- Grid Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Tool Card 1: Skin Viewer 2D -->
+                <div class="group relative bg-white dark:bg-sanop-surface rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-sanop-red/30 cursor-pointer" onclick="openModal('skinViewerModal')">
+                    <div class="w-12 h-12 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-user text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Skin Viewer 2D</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Preview skin file .png Anda. Pisahkan layer body dan outer layer secara instan.</p>
+                </div>
+
+                <!-- Tool Card 2: Armor Color Mixer -->
+                <div class="group relative bg-white dark:bg-sanop-surface rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-sanop-red/30 cursor-pointer" onclick="openModal('armorMixerModal')">
+                    <div class="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-paint-bucket text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Leather Armor Mixer</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Konversi warna Hex ke Decimal Code untuk pewarnaan Leather Armor.</p>
+                </div>
+
+                <!-- Tool Card 3: Manifest Gen -->
+                <div class="group relative bg-white dark:bg-sanop-surface rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-sanop-red/30 cursor-pointer" onclick="openModal('manifestModal')">
+                    <div class="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-file-code text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Pack Manifest Gen</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Generator otomatis file pack.mcmeta untuk Resource Pack dengan format presisi.</p>
+                </div>
+
+                <!-- Tool Card 4: Items Design Grid -->
+                <div class="group relative bg-white dark:bg-sanop-surface rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-sanop-red/30 cursor-pointer" onclick="openModal('itemGridModal')">
+                    <div class="w-12 h-12 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-grid-four text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Items Design Grid</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Canvas 16x16 pixel interaktif untuk sketsa cepat ide item kustom.</p>
+                </div>
+
+                <!-- Tool Card 5: Custom Model Data Tracker -->
+                <div class="group relative bg-white dark:bg-sanop-surface rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-sanop-red/30 cursor-pointer" onclick="openModal('cmdModal')">
+                    <div class="w-12 h-12 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-list-numbers text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">CMD ID Tracker</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Catat dan kelola ID Custom Model Data agar tidak terjadi konflik aset.</p>
+                </div>
+
+                <!-- Tool Card 6: Map Art Splitter -->
+                <div class="group relative bg-white dark:bg-sanop-surface rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-sanop-red/30 cursor-pointer" onclick="openModal('mapSplitterModal')">
+                    <div class="w-12 h-12 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-600 mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-map-trifold text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Map Art Splitter</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Kalkulator untuk memotong gambar besar menjadi grid 128x128 (Ukuran Map).</p>
+                </div>
+                
+                <!-- Additional Cards (Placeholder functionality for demo brevity) -->
+                <div class="group relative bg-white dark:bg-sanop-surface rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-sanop-red/30 cursor-pointer">
+                    <div class="w-12 h-12 rounded-lg bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center text-pink-600 mb-4">
+                        <i class="ph ph-magic-wand text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Glint Effect Preview</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Simulasi overlay enchant pada tekstur.</p>
+                </div>
+
+                <div class="group relative bg-white dark:bg-sanop-surface rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-sanop-red/30 cursor-pointer">
+                    <div class="w-12 h-12 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center text-cyan-600 mb-4">
+                        <i class="ph ph-cube text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Block Faces Guide</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Panduan orientasi sisi blok (North/South/Up/Down).</p>
+                </div>
+
+                <div class="group relative bg-white dark:bg-sanop-surface rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-sanop-red/30 cursor-pointer">
+                    <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 mb-4">
+                        <i class="ph ph-eyedropper text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Color Palette Stealer</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Ekstrak palet warna dominan dari skin Youtuber.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= MODALS (THE TOOLS INTERFACE) ================= -->
+
+    <!-- Modal Backdrop -->
+    <div id="modalBackdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden transition-opacity opacity-0 flex items-center justify-center p-4" onclick="closeAllModals()">
+        
+        <!-- 1. MANIFEST GENERATOR MODAL -->
+        <div id="manifestModal" class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform hidden flex-col gap-4" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xl font-bold text-sanop-red">Pack Manifest Generator</h3>
+                <button onclick="closeAllModals()" class="text-gray-400 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs uppercase tracking-wide text-gray-500 font-bold mb-2">Pack Format</label>
+                    <select id="packFormat" class="w-full bg-gray-100 dark:bg-black border border-gray-300 dark:border-gray-700 rounded p-3 focus:outline-none focus:border-sanop-red">
+                        <option value="15">1.20.2 - 1.20.4 (Format 18/22)</option>
+                        <option value="15">1.20 - 1.20.1 (Format 15)</option>
+                        <option value="13">1.19.4 (Format 13)</option>
+                        <option value="12">1.19.3 (Format 12)</option>
+                        <option value="9">1.19 - 1.19.2 (Format 9)</option>
+                        <option value="8">1.18 (Format 8)</option>
+                        <option value="7">1.17 (Format 7)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs uppercase tracking-wide text-gray-500 font-bold mb-2">Description</label>
+                    <input type="text" id="packDesc" placeholder="Contoh: SANOP Custom Assets" class="w-full bg-gray-100 dark:bg-black border border-gray-300 dark:border-gray-700 rounded p-3 focus:outline-none focus:border-sanop-red">
+                </div>
+                
+                <div class="bg-gray-900 rounded-lg p-4 font-mono text-xs text-green-400 overflow-x-auto relative group">
+                    <pre id="manifestOutput">Waiting for input...</pre>
+                    <button onclick="copyManifest()" class="absolute top-2 right-2 bg-white/10 hover:bg-white/20 p-2 rounded text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="ph ph-copy"></i>
+                    </button>
+                </div>
+
+                <button onclick="generateManifest()" class="w-full bg-sanop-red hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors">
+                    Generate JSON
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. ARMOR COLOR MIXER MODAL -->
+        <div id="armorMixerModal" class="bg-white dark:bg-zinc-900 w-full max-w-md rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform hidden flex-col gap-4" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-blue-500">Armor Color Mixer</h3>
+                <button onclick="closeAllModals()" class="text-gray-400 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+            
+            <div class="flex flex-col items-center gap-6 py-4">
+                <!-- Preview Armor -->
+                <div class="relative w-32 h-32 flex items-center justify-center bg-gray-100 dark:bg-black rounded-full border-4 border-gray-200 dark:border-gray-800">
+                    <i class="ph ph-t-shirt text-6xl transition-colors duration-300" id="armorIcon"></i>
+                </div>
+
+                <div class="w-full">
+                    <label class="block text-xs uppercase tracking-wide text-gray-500 font-bold mb-2">Pilih Warna (Hex)</label>
+                    <div class="flex gap-2">
+                        <input type="color" id="armorColorInput" class="h-10 w-10 p-0 border-0 rounded cursor-pointer" value="#A020F0">
+                        <input type="text" id="armorHexText" class="flex-1 bg-gray-100 dark:bg-black border border-gray-300 dark:border-gray-700 rounded px-3 uppercase" value="#A020F0">
+                    </div>
+                </div>
+
+                <div class="w-full bg-gray-800 p-4 rounded-lg text-center">
+                    <p class="text-xs text-gray-400 mb-1">Decimal Code (Untuk Command)</p>
+                    <p class="text-2xl font-mono font-bold text-white tracking-wider" id="decimalOutput">10494192</p>
+                    <p class="text-xs text-gray-500 mt-2">/give @p leather_chestplate{display:{color:<span id="cmdColorVal">10494192</span>}}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ITEM DESIGN GRID MODAL -->
+        <div id="itemGridModal" class="bg-white dark:bg-zinc-900 w-full max-w-xl rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform hidden flex-col gap-4" onclick="event.stopPropagation()">
+             <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xl font-bold text-purple-500">16x16 Item Designer</h3>
+                <button onclick="closeAllModals()" class="text-gray-400 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Canvas -->
+                <div class="flex-shrink-0">
+                    <div id="pixelCanvas" class="pixel-grid w-64 h-64 md:w-80 md:h-80 mx-auto">
+                        <!-- JS generated cells -->
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex-1 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold mb-1">Active Color</label>
+                        <div class="flex gap-2 flex-wrap" id="palette">
+                            <button class="w-8 h-8 rounded bg-black border-2 border-white ring-2 ring-blue-500" onclick="setBrush(this, '#000000')"></button>
+                            <button class="w-8 h-8 rounded bg-white border border-gray-500" onclick="setBrush(this, '#ffffff')"></button>
+                            <button class="w-8 h-8 rounded bg-red-600 border border-gray-500" onclick="setBrush(this, '#dc2626')"></button>
+                            <button class="w-8 h-8 rounded bg-green-600 border border-gray-500" onclick="setBrush(this, '#16a34a')"></button>
+                            <button class="w-8 h-8 rounded bg-blue-600 border border-gray-500" onclick="setBrush(this, '#2563eb')"></button>
+                            <!-- Eraser -->
+                            <button class="w-8 h-8 rounded bg-transparent border border-dashed border-gray-500 flex items-center justify-center text-gray-500" onclick="setBrush(this, 'transparent')">
+                                <i class="ph ph-eraser"></i>
+                            </button>
+                        </div>
+                         <input type="color" class="mt-2 w-full h-8" onchange="setBrush(null, this.value)">
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-700">
+                        <button onclick="clearGrid()" class="w-full py-2 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition mb-2">Clear Canvas</button>
+                        <p class="text-xs text-gray-500 text-center">Simulasi desain. Screenshot untuk menyimpan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SKIN VIEWER MODAL (Mockup/Simple) -->
+        <div id="skinViewerModal" class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform hidden flex-col gap-4" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-orange-500">Skin Viewer 2D</h3>
+                <button onclick="closeAllModals()" class="text-gray-400 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+            
+            <div class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center" id="dropZone">
+                <i class="ph ph-upload-simple text-4xl text-gray-500 mb-2"></i>
+                <p class="text-sm text-gray-400">Drag & Drop file skin (.png) atau klik untuk upload</p>
+                <input type="file" id="skinInput" class="hidden" accept="image/png">
+            </div>
+
+            <div id="skinPreviewArea" class="hidden flex gap-4 justify-center mt-4">
+                <div class="text-center">
+                    <p class="text-xs font-bold mb-1">Face</p>
+                    <div class="w-16 h-16 bg-gray-800 pixel-grid" style="grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr);" id="facePreview"></div>
+                </div>
+                <div class="text-center">
+                     <p class="text-xs font-bold mb-1">Raw File</p>
+                     <img id="rawPreview" class="w-16 h-auto border border-gray-700">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Other placeholders -->
+        <div id="genericModal" class="bg-white dark:bg-zinc-900 w-full max-w-md rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform hidden text-center" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 bg-sanop-red/20 rounded-full flex items-center justify-center mx-auto mb-4 text-sanop-red">
+                <i class="ph ph-wrench text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Fitur Segera Hadir</h3>
+            <p class="text-gray-500 mb-6">Tools ini sedang dikembangkan untuk update SANOP berikutnya.</p>
+            <button onclick="closeAllModals()" class="px-6 py-2 bg-gray-200 dark:bg-white/10 rounded-lg font-medium">Tutup</button>
+        </div>
+
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-white dark:bg-zinc-950 border-t border-gray-200 dark:border-zinc-800 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-2">
+                    <span class="text-2xl font-black tracking-tighter">SANOP<span class="text-sanop-red">:</span>TOOLS</span>
+                    <p class="mt-4 text-sm text-gray-500 dark:text-gray-400 max-w-xs">
+                        Platform premium untuk kreator Minecraft. Tingkatkan kualitas aset visual Anda dengan alat yang presisi.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Features</h4>
+                    <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                        <li><a href="#" class="hover:text-sanop-red">Skin Artists</a></li>
+                        <li><a href="#" class="hover:text-sanop-red">Texture Packs</a></li>
+                        <li><a href="#" class="hover:text-sanop-red">Map Art</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-sanop-red text-xl"><i class="ph ph-youtube-logo"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-sanop-red text-xl"><i class="ph ph-discord-logo"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-sanop-red text-xl"><i class="ph ph-twitter-logo"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 dark:border-zinc-800 pt-8 text-center">
+                <p class="text-xs text-gray-500">&copy; 2024 SANOP MC. All rights reserved. Not affiliated with Mojang Studios.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // --- 1. THEME MANAGEMENT (Dark/Light) ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+        const html = document.documentElement;
+        
+        // Cek LocalStorage atau Preferensi Sistem
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            updateIcons(true);
+        } else {
+            html.classList.remove('dark');
+            updateIcons(false);
+        }
+
+        function toggleTheme() {
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            updateIcons(isDark);
+        }
+
+        function updateIcons(isDark) {
+            const iconClass = isDark ? 'ph-sun' : 'ph-moon';
+            document.getElementById('theme-icon').className = `ph ${iconClass} text-xl`;
+            document.getElementById('theme-icon-mobile').className = `ph ${iconClass} text-xl`;
+        }
+
+        themeToggleBtn.addEventListener('click', toggleTheme);
+        themeToggleMobile.addEventListener('click', toggleTheme);
+
+        // --- 2. MOBILE MENU ---
+        const btnMobile = document.getElementById('mobile-menu-btn');
+        const menuMobile = document.getElementById('mobile-menu');
+
+        btnMobile.addEventListener('click', () => {
+            menuMobile.classList.toggle('hidden');
+        });
+
+        // --- 3. MODAL SYSTEM ---
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const modals = {
+            'skinViewerModal': document.getElementById('skinViewerModal'),
+            'armorMixerModal': document.getElementById('armorMixerModal'),
+            'manifestModal': document.getElementById('manifestModal'),
+            'itemGridModal': document.getElementById('itemGridModal'),
+            'cmdModal': document.getElementById('genericModal'), // Placeholder pointing to generic
+            'mapSplitterModal': document.getElementById('genericModal') // Placeholder pointing to generic
+        };
+
+        function openModal(modalId) {
+            const modal = modals[modalId] || document.getElementById('genericModal');
+            
+            modalBackdrop.classList.remove('hidden');
+            // Sedikit timeout agar transisi opacity bekerja
+            setTimeout(() => {
+                modalBackdrop.classList.remove('opacity-0');
+                modalBackdrop.classList.add('opacity-100');
+            }, 10);
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('scale-95');
+                modal.classList.add('scale-100');
+            }, 10);
+
+            // Init specific functions if needed
+            if(modalId === 'itemGridModal' && document.getElementById('pixelCanvas').children.length === 0) {
+                initPixelGrid();
+            }
+        }
+
+        function closeAllModals() {
+            modalBackdrop.classList.remove('opacity-100');
+            modalBackdrop.classList.add('opacity-0');
+            
+            // Sembunyikan semua konten modal
+            Object.values(modals).forEach(m => {
+                m.classList.remove('scale-100');
+                m.classList.add('scale-95');
+                setTimeout(() => m.classList.add('hidden'), 200);
+            });
+            document.getElementById('genericModal').classList.add('hidden');
+
+            setTimeout(() => {
+                modalBackdrop.classList.add('hidden');
+            }, 200);
+        }
+
+        // --- 4. TOOL LOGIC: MANIFEST GENERATOR ---
+        function generateManifest() {
+            const format = document.getElementById('packFormat').value;
+            const desc = document.getElementById('packDesc').value || "SANOP Assets";
+            
+            const json = {
+                "pack": {
+                    "pack_format": parseInt(format),
+                    "description": desc
+                }
+            };
+            
+            document.getElementById('manifestOutput').innerText = JSON.stringify(json, null, 4);
+        }
+
+        function copyManifest() {
+            const text = document.getElementById('manifestOutput').innerText;
+            navigator.clipboard.writeText(text);
+            alert("JSON Copied to Clipboard!");
+        }
+
+        // --- 5. TOOL LOGIC: ARMOR COLOR MIXER ---
+        const armorInput = document.getElementById('armorColorInput');
+        const armorHex = document.getElementById('armorHexText');
+        const armorIcon = document.getElementById('armorIcon');
+        const decimalOut = document.getElementById('decimalOutput');
+        const cmdVal = document.getElementById('cmdColorVal');
+
+        function updateArmorColor(hex) {
+            // Update UI
+            armorIcon.style.color = hex;
+            armorHex.value = hex;
+            armorInput.value = hex;
+
+            // Logic: Hex to Decimal
+            // Remove '#'
+            const cleanHex = hex.substring(1);
+            const decimal = parseInt(cleanHex, 16);
+            
+            decimalOut.innerText = decimal;
+            cmdVal.innerText = decimal;
+        }
+
+        armorInput.addEventListener('input', (e) => updateArmorColor(e.target.value));
+        armorHex.addEventListener('input', (e) => {
+            let val = e.target.value;
+            if(!val.startsWith('#')) val = '#' + val;
+            if(/^#[0-9A-F]{6}$/i.test(val)) {
+                updateArmorColor(val);
+            }
+        });
+
+        // --- 6. TOOL LOGIC: ITEM DESIGN GRID ---
+        let brushColor = '#000000';
+        let isDrawing = false;
+
+        function initPixelGrid() {
+            const canvas = document.getElementById('pixelCanvas');
+            canvas.innerHTML = ''; // Reset
+            for (let i = 0; i < 256; i++) { // 16x16
+                const cell = document.createElement('div');
+                cell.className = 'pixel-cell';
+                
+                // Mouse Events
+                cell.addEventListener('mousedown', () => {
+                    isDrawing = true;
+                    cell.style.backgroundColor = brushColor;
+                });
+                cell.addEventListener('mouseenter', () => {
+                    if(isDrawing) cell.style.backgroundColor = brushColor;
+                });
+                
+                canvas.appendChild(cell);
+            }
+        }
+
+        document.body.addEventListener('mouseup', () => isDrawing = false);
+
+        function setBrush(btn, color) {
+            brushColor = color;
+            // Visual feedback for selected brush could be added here
+        }
+
+        function clearGrid() {
+            const cells = document.querySelectorAll('.pixel-cell');
+            cells.forEach(c => c.style.backgroundColor = 'transparent');
+        }
+
+        // --- 7. TOOL LOGIC: SKIN UPLOAD (Mock) ---
+        const dropZone = document.getElementById('dropZone');
+        const skinInput = document.getElementById('skinInput');
+        
+        dropZone.addEventListener('click', () => skinInput.click());
+        
+        skinInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('rawPreview').src = event.target.result;
+                    document.getElementById('dropZone').classList.add('hidden');
+                    document.getElementById('skinPreviewArea').classList.remove('hidden');
+                    document.getElementById('skinPreviewArea').classList.add('flex');
+                    
+                    // Note: Memotong bagian wajah secara real memerlukan Canvas processing yang kompleks
+                    // Di sini kita hanya menampilkan raw image sebagai Proof of Concept.
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+    </script>
+</body>
+</html>
